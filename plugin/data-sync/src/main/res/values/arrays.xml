@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="sync_interval_entries">
+        <item>@string/pref_interval_15m</item>
+        <item>@string/pref_interval_1h</item>
+        <item>@string/pref_interval_6h</item>
+        <item>@string/pref_interval_12h</item>
+        <item>@string/pref_interval_24h</item>
+    </string-array>
+    <string-array name="sync_interval_values">
+        <item>15</item>
+        <item>60</item>
+        <item>360</item>
+        <item>720</item>
+        <item>1440</item>
+    </string-array>
+    <string-array name="data_section_entries">
+        <item>@string/pref_directory_shared_prefs</item>
+        <item>@string/pref_directory_databases</item>
+        <item>@string/pref_directory_external</item>
+        <item>@string/pref_directory_recently_used</item>
+    </string-array>
+    <string-array name="data_section_values">
+        <item>shared_prefs</item>
+        <item>databases</item>
+        <item>external</item>
+        <item>recently_used</item>
+    </string-array>
+    <string-array name="data_section_default_values">
+        <item>shared_prefs</item>
+        <item>databases</item>
+        <item>external</item>
+    </string-array>
+</resources>

@@ -1,5 +1,6 @@
 package org.fcitx.fcitx5.android.common.ipc;
 
+import android.os.ParcelFileDescriptor;
 import org.fcitx.fcitx5.android.common.ipc.IClipboardEntryTransformer;
 
 interface IFcitxRemoteService {
@@ -22,4 +23,10 @@ interface IFcitxRemoteService {
    void reloadPinyinDict();
    /** Reload fcitx quick phrase */
    void reloadQuickPhrase();
+
+   /** Export selected user data sections to the provided file descriptor */
+   void exportUserData(ParcelFileDescriptor dest, in String[] sections);
+
+   /** Import selected user data sections from the provided file descriptor */
+   void importUserData(ParcelFileDescriptor src, in String[] sections);
 }
