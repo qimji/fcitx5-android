@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        android:key="category_export"
+        android:title="@string/category_export">
+
+        <SwitchPreferenceCompat
+            android:key="export_enabled"
+            android:title="@string/pref_export_enable_title"
+            android:summary="@string/pref_export_enable_summary"
+            android:defaultValue="false" />
+
+        <ListPreference
+            android:key="export_interval"
+            android:title="@string/pref_interval_title"
+            app:defaultValue="60"
+            app:entries="@array/sync_interval_entries"
+            app:entryValues="@array/sync_interval_values"
+            app:useSimpleSummaryProvider="true" />
+
+        <MultiSelectListPreference
+            android:key="export_sections"
+            android:title="@string/pref_sections_title"
+            android:summary="@string/pref_sections_export_summary"
+            app:entries="@array/data_section_entries"
+            app:entryValues="@array/data_section_values"
+            app:defaultValue="@array/data_section_default_values" />
+
+        <Preference
+            android:key="export_path"
+            android:title="@string/pref_export_path_title"
+            android:summary="@string/pref_export_path_summary"
+            android:selectable="false" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="category_import"
+        android:title="@string/category_import">
+
+        <SwitchPreferenceCompat
+            android:key="import_enabled"
+            android:title="@string/pref_import_enable_title"
+            android:summary="@string/pref_import_enable_summary"
+            android:defaultValue="false" />
+
+        <ListPreference
+            android:key="import_interval"
+            android:title="@string/pref_interval_title"
+            app:defaultValue="720"
+            app:entries="@array/sync_interval_entries"
+            app:entryValues="@array/sync_interval_values"
+            app:useSimpleSummaryProvider="true" />
+
+        <MultiSelectListPreference
+            android:key="import_sections"
+            android:title="@string/pref_sections_title"
+            android:summary="@string/pref_sections_import_summary"
+            app:entries="@array/data_section_entries"
+            app:entryValues="@array/data_section_values"
+            app:defaultValue="@array/data_section_default_values" />
+
+        <Preference
+            android:key="import_path"
+            android:title="@string/pref_import_path_title"
+            android:summary="@string/pref_import_path_summary"
+            android:selectable="false" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

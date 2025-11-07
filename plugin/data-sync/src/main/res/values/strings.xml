@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Fcitx5 Data Sync</string>
+    <string name="app_name_release">Fcitx5 Data Sync</string>
+    <string name="app_name_debug">Fcitx5 Data Sync (Debug)</string>
+    <string name="plugin_description">Synchronise Fcitx5 user data with external storage on a schedule.</string>
+    <string name="settings_title">Fcitx5 Data Sync</string>
+    <string name="category_export">Export to external storage</string>
+    <string name="category_import">Import from external storage</string>
+    <string name="pref_export_enable_title">Enable automatic export</string>
+    <string name="pref_export_enable_summary">Periodically write selected data into an archive on external storage.</string>
+    <string name="pref_import_enable_title">Enable automatic import</string>
+    <string name="pref_import_enable_summary">Periodically restore selected data from the archive if it exists.</string>
+    <string name="pref_interval_title">Sync interval</string>
+    <string name="pref_sections_title">Data sections</string>
+    <string name="pref_interval_15m">Every 15 minutes</string>
+    <string name="pref_interval_1h">Every hour</string>
+    <string name="pref_interval_6h">Every 6 hours</string>
+    <string name="pref_interval_12h">Every 12 hours</string>
+    <string name="pref_interval_24h">Every day</string>
+    <string name="pref_sections_export_summary">Choose the data directories that will be exported.</string>
+    <string name="pref_sections_import_summary">Choose the data directories that will be imported.</string>
+    <string name="pref_directory_shared_prefs">Preferences</string>
+    <string name="pref_directory_databases">Databases</string>
+    <string name="pref_directory_external">External files</string>
+    <string name="pref_directory_recently_used">Recently used items</string>
+    <string name="pref_export_path_title">Export file</string>
+    <string name="pref_import_path_title">Import file</string>
+    <string name="pref_export_path_summary">Files are written to: %1$s</string>
+    <string name="pref_import_path_summary">Files are read from: %1$s</string>
+    <string name="pref_interval_summary">Current interval: %1$s</string>
+    <string name="log_export_success">Exported data to %1$s</string>
+    <string name="log_import_success">Imported data from %1$s</string>
+    <string name="log_skipped_missing">Skipped import because %1$s does not exist.</string>
+    <string name="log_error_format">Data sync failed: %1$s</string>
+</resources>

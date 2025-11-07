@@ -7,6 +7,7 @@ package org.fcitx.fcitx5.android
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
+import android.os.ParcelFileDescriptor
 import android.os.Process
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.MainScope
@@ -16,12 +17,14 @@ import kotlinx.coroutines.plus
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import org.fcitx.fcitx5.android.common.data.UserDataSection
 import org.fcitx.fcitx5.android.common.ipc.IClipboardEntryTransformer
 import org.fcitx.fcitx5.android.common.ipc.IFcitxRemoteService
 import org.fcitx.fcitx5.android.core.data.DataManager
 import org.fcitx.fcitx5.android.core.reloadPinyinDict
 import org.fcitx.fcitx5.android.core.reloadQuickPhrase
 import org.fcitx.fcitx5.android.daemon.FcitxDaemon
+import org.fcitx.fcitx5.android.data.UserDataManager
 import org.fcitx.fcitx5.android.data.clipboard.ClipboardManager
 import org.fcitx.fcitx5.android.utils.Const
 import org.fcitx.fcitx5.android.utils.desc
@@ -55,6 +58,11 @@ class FcitxRemoteService : Service() {
         ClipboardManager.transformer =
             if (clipboardTransformers.isEmpty()) null else ::transformClipboard
         Timber.d("All clipboard transformers: ${clipboardTransformers.joinToString { it.desc }}")
+    }
+
+    private fun parseSections(sections: Array<out String>): Set<UserDataSection> {
+        val parsed = sections.mapNotNull(UserDataSection::fromId).toSet()
+        return if (parsed.isEmpty()) UserDataSection.entries.toSet() else parsed
     }
 
     private val binder = object : IFcitxRemoteService.Stub() {
@@ -105,6 +113,25 @@ class FcitxRemoteService : Service() {
 
         override fun reloadQuickPhrase() {
             FcitxDaemon.getFirstConnectionOrNull()?.runIfReady { reloadQuickPhrase() }
+        }
+
+        override fun exportUserData(dest: ParcelFileDescriptor, sections: Array<out String>) {
+            ParcelFileDescriptor.AutoCloseOutputStream(dest).use { outputStream ->
+                UserDataManager.export(
+                    outputStream,
+                    timestamp = System.currentTimeMillis(),
+                    include = parseSections(sections)
+                ).getOrThrow()
+            }
+        }
+
+        override fun importUserData(src: ParcelFileDescriptor, sections: Array<out String>) {
+            ParcelFileDescriptor.AutoCloseInputStream(src).use { inputStream ->
+                UserDataManager.import(
+                    inputStream,
+                    include = parseSections(sections)
+                ).getOrThrow()
+            }
         }
     }
 

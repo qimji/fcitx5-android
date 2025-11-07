@@ -10,6 +10,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.encodeToStream
 import org.fcitx.fcitx5.android.BuildConfig
 import org.fcitx.fcitx5.android.R
+import org.fcitx.fcitx5.android.common.data.UserDataSection
 import org.fcitx.fcitx5.android.utils.Const
 import org.fcitx.fcitx5.android.utils.appContext
 import org.fcitx.fcitx5.android.utils.errorRuntime
@@ -57,15 +58,24 @@ object UserDataManager {
     private val recentlyUsedDir = appContext.filesDir.resolve(RecentlyUsed.DIR_NAME)
 
     @OptIn(ExperimentalSerializationApi::class)
-    fun export(dest: OutputStream, timestamp: Long = System.currentTimeMillis()) = runCatching {
+    fun export(
+        dest: OutputStream,
+        timestamp: Long = System.currentTimeMillis(),
+        include: Set<UserDataSection> = UserDataSection.entries.toSet()
+    ) = runCatching {
         ZipOutputStream(dest.buffered()).use { zipStream ->
-            // shared_prefs
-            writeFileTree(sharedPrefsDir, "shared_prefs", zipStream)
-            // databases
-            writeFileTree(dataBasesDir, "databases", zipStream)
-            // external
-            writeFileTree(externalDir, "external", zipStream)
-            // recently_used moved to SharedPreference and shoud not be exported
+            if (UserDataSection.SHARED_PREFS in include) {
+                writeFileTree(sharedPrefsDir, UserDataSection.SHARED_PREFS.id, zipStream)
+            }
+            if (UserDataSection.DATABASES in include) {
+                writeFileTree(dataBasesDir, UserDataSection.DATABASES.id, zipStream)
+            }
+            if (UserDataSection.EXTERNAL in include) {
+                writeFileTree(externalDir, UserDataSection.EXTERNAL.id, zipStream)
+            }
+            if (UserDataSection.RECENTLY_USED in include) {
+                writeFileTree(recentlyUsedDir, UserDataSection.RECENTLY_USED.id, zipStream)
+            }
             // metadata
             zipStream.putNextEntry(ZipEntry("metadata.json"))
             val pkgInfo = appContext.packageManager.getPackageInfo(appContext.packageName, 0)
@@ -90,7 +100,10 @@ object UserDataManager {
         }
     }
 
-    fun import(src: InputStream) = runCatching {
+    fun import(
+        src: InputStream,
+        include: Set<UserDataSection> = UserDataSection.entries.toSet()
+    ) = runCatching {
         ZipInputStream(src).use { zipStream ->
             withTempDir { tempDir ->
                 val extracted = zipStream.extract(tempDir)
@@ -99,11 +112,18 @@ object UserDataManager {
                 val metadata = json.decodeFromString<Metadata>(metadataFile.readText())
                 if (metadata.packageName != BuildConfig.APPLICATION_ID)
                     errorRuntime(R.string.exception_user_data_package_name_mismatch)
-                copyDir(File(tempDir, "shared_prefs"), sharedPrefsDir)
-                copyDir(File(tempDir, "databases"), dataBasesDir)
-                copyDir(File(tempDir, "external"), externalDir)
-                // keep importing recently_used for backwords compatibility
-                copyDir(File(tempDir, "recently_used"), recentlyUsedDir)
+                if (UserDataSection.SHARED_PREFS in include) {
+                    copyDir(File(tempDir, UserDataSection.SHARED_PREFS.id), sharedPrefsDir)
+                }
+                if (UserDataSection.DATABASES in include) {
+                    copyDir(File(tempDir, UserDataSection.DATABASES.id), dataBasesDir)
+                }
+                if (UserDataSection.EXTERNAL in include) {
+                    copyDir(File(tempDir, UserDataSection.EXTERNAL.id), externalDir)
+                }
+                if (UserDataSection.RECENTLY_USED in include) {
+                    copyDir(File(tempDir, UserDataSection.RECENTLY_USED.id), recentlyUsedDir)
+                }
                 metadata
             }
         }
