@@ -17,10 +17,10 @@ class SyncSettingsFragment : PreferenceFragmentCompat() {
         setPreferencesFromResource(R.xml.preferences, rootKey)
         syncPreferences = SyncPreferences(requireContext())
         findPreference<MultiSelectListPreference>(SyncPreferences.KEY_EXPORT_SECTIONS)?.apply {
-            summaryProvider = MultiSelectListPreference.SimpleSummaryProvider.getInstance()
+            summaryProvider = MultiSelectSummaryProvider
         }
         findPreference<MultiSelectListPreference>(SyncPreferences.KEY_IMPORT_SECTIONS)?.apply {
-            summaryProvider = MultiSelectListPreference.SimpleSummaryProvider.getInstance()
+            summaryProvider = MultiSelectSummaryProvider
         }
         updatePathSummaries()
     }
@@ -42,5 +42,32 @@ class SyncSettingsFragment : PreferenceFragmentCompat() {
                 R.string.pref_import_path_summary,
                 syncPreferences.importFile(context).absolutePath
             )
+    }
+
+    private object MultiSelectSummaryProvider :
+        Preference.SummaryProvider<MultiSelectListPreference> {
+
+        override fun provideSummary(preference: MultiSelectListPreference): CharSequence {
+            val values = preference.values
+            if (values.isNullOrEmpty()) {
+                return preference.context.getString(androidx.preference.R.string.not_set)
+            }
+            val entries = preference.entries
+            val entryValues = preference.entryValues
+            if (entries.isNullOrEmpty() || entryValues.isNullOrEmpty()) {
+                return values.sorted().joinToString()
+            }
+
+            val selectedEntries = values.mapNotNull { value ->
+                val index = entryValues.indexOf(value)
+                entries.getOrNull(index)?.toString()
+            }
+
+            return if (selectedEntries.isEmpty()) {
+                preference.context.getString(androidx.preference.R.string.not_set)
+            } else {
+                selectedEntries.joinToString()
+            }
+        }
     }
 }

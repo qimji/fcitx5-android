@@ -25,8 +25,8 @@ interface IFcitxRemoteService {
    void reloadQuickPhrase();
 
    /** Export selected user data sections to the provided file descriptor */
-   void exportUserData(ParcelFileDescriptor dest, in String[] sections);
+   void exportUserData(in ParcelFileDescriptor dest, in String[] sections);
 
    /** Import selected user data sections from the provided file descriptor */
-   void importUserData(ParcelFileDescriptor src, in String[] sections);
+   void importUserData(in ParcelFileDescriptor src, in String[] sections);
 }
